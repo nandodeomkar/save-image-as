@@ -49,11 +49,34 @@ All conversions are processed **100% locally on your machine** using hardware-ac
 
 ---
 
-## 🚀 Installation & Loading in Browser
+## 🚀 Installation & Setup
 
-### Load Unpacked in Developer Mode (Chrome / Brave / Edge / Opera / Vivaldi)
+### Quick Start for Non-Technical Users (Easiest Way)
 
-1. Clone or download this repository:
+Since this extension is not yet on the Chrome Web Store, you can easily install it manually directly from GitHub in less than a minute:
+
+1. **Download the Extension:**
+   - Go to the [Releases page](https://github.com/nandodeomkar/save-image-as/releases) for this project.
+   - Under the latest release, click on the **`.zip`** file (e.g., `save-image-as-v1.0.0.zip`) to download it.
+   - **Extract (unzip)** the downloaded file to a permanent folder on your computer (e.g., your Documents folder).
+
+2. **Load into your Browser (Chrome, Edge, Brave, Opera):**
+   - Open your browser and go to the Extensions page:
+     - **Google Chrome / Brave**: Type `chrome://extensions` in the address bar and press <kbd>Enter</kbd>.
+     - **Microsoft Edge**: Type `edge://extensions` in the address bar and press <kbd>Enter</kbd>.
+     - **Opera**: Type `opera://extensions` in the address bar and press <kbd>Enter</kbd>.
+   - Turn on **"Developer mode"** (usually a toggle switch in the top-right corner).
+   - Click the **"Load unpacked"** button.
+   - Select the folder you just extracted (make sure it's the folder that contains the `manifest.json` file).
+
+3. **Pin and Use!**
+   - Click the puzzle piece icon 🧩 in your browser toolbar, find "Save Image As", and click the pin icon to keep the settings dashboard easily accessible.
+
+### Developer Instructions (Build from Source)
+
+If you prefer to build the extension from source:
+
+1. Clone this repository:
    ```bash
    git clone https://github.com/nandodeomkar/save-image-as.git
    cd save-image-as
@@ -65,16 +88,7 @@ All conversions are processed **100% locally on your machine** using hardware-ac
    npm run build
    ```
 
-3. Open your browser and navigate to the Extensions page:
-   - **Google Chrome / Brave**: `chrome://extensions`
-   - **Microsoft Edge**: `edge://extensions`
-   - **Opera**: `opera://extensions`
-
-4. Enable the **"Developer mode"** toggle in the top-right corner.
-
-5. Click **"Load unpacked"** and select the **`dist`** folder inside this repository.
-
-6. The extension is now active! Pin it from your browser's toolbar puzzle icon.
+3. Open your browser's Extensions page, enable **"Developer mode"**, click **"Load unpacked"**, and select the **`dist`** folder inside this repository.
 
 ---
 
