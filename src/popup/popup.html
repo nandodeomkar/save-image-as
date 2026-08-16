@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save Image As Settings</title>
+  <link rel="stylesheet" href="./popup.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="brand">
+      <img src="/icons/icon-32.png" alt="Extension Icon" class="brand-icon">
+      <div class="brand-title">
+        <span>Save Image As</span>
+        <span class="version-pill">v1.0</span>
+      </div>
+    </div>
+    <div id="sync-badge" class="sync-badge" title="Settings synchronized across browsers">
+      <span class="dot"></span>
+      <span id="sync-text">Saved</span>
+    </div>
+  </header>
+
+  <!-- Quick Save & Shortcuts -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        1-Click Quick Save
+      </span>
+    </div>
+
+    <div class="control-row">
+      <div class="control-label">
+        <span class="control-name">Default Format</span>
+        <span class="control-desc">Format used for 1-click download</span>
+      </div>
+      <div class="select-wrapper">
+        <select id="default-format" aria-label="Default format">
+          <option value="png">PNG (.png)</option>
+          <option value="jpeg">JPG / JPEG (.jpg)</option>
+          <option value="webp">WebP (.webp)</option>
+          <option value="avif">AVIF (.avif)</option>
+          <option value="bmp">BMP (.bmp)</option>
+          <option value="gif">GIF (.gif)</option>
+          <option value="ico">ICO (.ico)</option>
+          <option value="pdf">PDF (.pdf)</option>
+          <option value="svg">SVG (.svg)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="control-row">
+      <div class="control-label">
+        <span class="control-name">Shortcut Key</span>
+        <span class="control-desc">Trigger instant save on click</span>
+      </div>
+      <div class="select-wrapper">
+        <select id="shortcut-modifier" aria-label="Shortcut modifier key">
+          <option value="alt">Alt + Click</option>
+          <option value="ctrl">Ctrl + Click</option>
+          <option value="shift">Shift + Click</option>
+          <option value="none">Disabled</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="control-row">
+      <div class="control-label">
+        <span class="control-name">Notify on Download</span>
+        <span class="control-desc">Show notification when download begins</span>
+      </div>
+      <label class="switch" for="notify-on-success">
+        <input type="checkbox" id="notify-on-success">
+        <span class="slider"></span>
+      </label>
+    </div>
+  </section>
+
+  <!-- Context Menu Formats Checklist -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+        Context Menu Formats
+      </span>
+      <div class="formats-actions">
+        <button type="button" id="btn-select-all-formats" class="btn-link">All</button>
+        <button type="button" id="btn-select-common-formats" class="btn-link">Standard</button>
+      </div>
+    </div>
+
+    <div id="formats-grid" class="formats-grid">
+      <!-- Dynamically generated format cards -->
+    </div>
+  </section>
+
+  <!-- Compression Quality Sliders -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="21" x2="4" y2="14"></line>
+          <line x1="4" y1="10" x2="4" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12" y2="3"></line>
+          <line x1="20" y1="21" x2="20" y2="16"></line>
+          <line x1="20" y1="12" x2="20" y2="3"></line>
+          <line x1="1" y1="14" x2="7" y2="14"></line>
+          <line x1="9" y1="8" x2="15" y2="8"></line>
+          <line x1="17" y1="16" x2="23" y2="16"></line>
+        </svg>
+        Lossy Compression Quality
+      </span>
+    </div>
+
+    <div class="quality-item">
+      <div class="quality-label-bar">
+        <span class="quality-title">JPEG / JPG Quality</span>
+        <span id="val-quality-jpeg" class="quality-value">92%</span>
+      </div>
+      <input type="range" id="quality-jpeg" class="range-slider" min="10" max="100" step="1" value="92" aria-label="JPEG quality slider">
+    </div>
+
+    <div class="quality-item">
+      <div class="quality-label-bar">
+        <span class="quality-title">WebP Quality</span>
+        <span id="val-quality-webp" class="quality-value">90%</span>
+      </div>
+      <input type="range" id="quality-webp" class="range-slider" min="10" max="100" step="1" value="90" aria-label="WebP quality slider">
+    </div>
+
+    <div class="quality-item">
+      <div class="quality-label-bar">
+        <span class="quality-title">AVIF Quality</span>
+        <span id="val-quality-avif" class="quality-value">85%</span>
+      </div>
+      <input type="range" id="quality-avif" class="range-slider" min="10" max="100" step="1" value="85" aria-label="AVIF quality slider">
+    </div>
+  </section>
+
+  <!-- Alpha Fill Color for Opaque Formats -->
+  <section class="section">
+    <div class="section-header">
+      <div class="control-label">
+        <span class="control-name">Transparency Background Fill</span>
+        <span class="control-desc">Fill color when saving transparent images as JPG / BMP</span>
+      </div>
+    </div>
+    <div class="color-picker-group">
+      <button type="button" id="swatch-white" class="color-swatch-btn active" data-color="#FFFFFF">
+        <span class="swatch-circle" style="background: #FFFFFF;"></span>
+        White
+      </button>
+      <button type="button" id="swatch-black" class="color-swatch-btn" data-color="#000000">
+        <span class="swatch-circle" style="background: #000000;"></span>
+        Black
+      </button>
+      <div class="color-input-wrapper" title="Choose custom color">
+        <input type="color" id="bg-color-picker" value="#FFFFFF" aria-label="Custom background fill color">
+      </div>
+      <input type="hidden" id="bg-color-val" value="#FFFFFF">
+    </div>
+  </section>
+
+  <!-- Filename Template & Live Preview -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        Filename Template
+      </span>
+    </div>
+
+    <input type="text" id="filename-template" class="input-text" placeholder="[name].[ext]" value="[name].[ext]" spellcheck="false" aria-label="Filename pattern template">
+
+    <div class="token-chips" id="token-chips" title="Click to insert token into template">
+      <button type="button" class="token-chip" data-token="[name]">[name]</button>
+      <button type="button" class="token-chip" data-token="[ext]">[ext]</button>
+      <button type="button" class="token-chip" data-token="[domain]">[domain]</button>
+      <button type="button" class="token-chip" data-token="[page-title]">[page-title]</button>
+      <button type="button" class="token-chip" data-token="[date]">[date]</button>
+      <button type="button" class="token-chip" data-token="[timestamp]">[timestamp]</button>
+      <button type="button" class="token-chip" data-token="[dimensions]">[dimensions]</button>
+    </div>
+
+    <div class="preview-box">
+      <div class="preview-label">Live Preview</div>
+      <div id="filename-preview" class="preview-value">sample-nature-wallpaper.png</div>
+    </div>
+  </section>
+
+  <!-- Footer Actions -->
+  <footer class="footer">
+    <button type="button" id="btn-reset" class="btn-secondary">Reset to Defaults</button>
+    <span class="footer-hint">100% Local &amp; Private</span>
+  </footer>
+
+  <script type="module" src="./popup.ts"></script>
+</body>
+</html>

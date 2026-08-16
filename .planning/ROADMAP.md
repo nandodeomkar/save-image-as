@@ -10,12 +10,16 @@ A structured, 6-phase journey to build a complete, production-ready Chromium bro
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Project Architecture & Manifest V3 Foundation** - Setup Vite + TypeScript build system, MV3 manifest, background service worker, and offscreen document IPC bridge.
-- [ ] **Phase 2: Client-Side Conversion Engine & Encoders** - Build the complete client-side conversion pipeline (Canvas, alpha fill, BMP/ICO/PDF/GIF encoders, quality controls).
-- [ ] **Phase 3: DOM Inspection & High-Res Extraction** - Implement content script to detect images, parse responsive `srcset` for highest resolution, capture CSS background images/canvas/SVGs, and bind Alt+Click shortcut.
-- [ ] **Phase 4: Context Menu, Download Manager & Filename Engine** - Build dynamic context menus, tokenized filename template formatter with sanitization, and `chrome.downloads` integration.
-- [ ] **Phase 5: Popup Settings Dashboard & Storage Sync** - Create a sleek, modern popup UI to customize active context menu formats, default shortcut action, compression quality, and filename rules.
+- [x] **Phase 1: Project Architecture & Manifest V3 Foundation** - Setup Vite + TypeScript build system, MV3 manifest, background service worker, and offscreen document IPC bridge.
+- [x] **Phase 2: Client-Side Conversion Engine & Encoders** - Build the complete client-side conversion pipeline (Canvas, alpha fill, BMP/ICO/PDF/GIF encoders, quality controls).
+- [x] **Phase 3: DOM Inspection & High-Res Extraction** - Implement content script to detect images, parse responsive `srcset` for highest resolution, capture CSS background images/canvas/SVGs, and bind Alt+Click shortcut.
+- [x] **Phase 4: Context Menu, Download Manager & Filename Engine** - Build dynamic context menus, tokenized filename template formatter with sanitization, and `chrome.downloads` integration.
+- [x] **Phase 5: Popup Settings Dashboard & Storage Sync** - Create a sleek, modern popup UI to customize active context menu formats, default shortcut action, compression quality, and filename rules.
 - [ ] **Phase 6: End-to-End Verification, Fixtures & Extension Packaging** - Build test fixture with all image edge cases (CORS, srcset, SVG, canvas, transparent PNG), run full test suite, and bundle production extension.
+
+## Phase Details
+<!-- truncated details handled below -->
+
 
 ## Phase Details
 
@@ -30,8 +34,8 @@ A structured, 6-phase journey to build a complete, production-ready Chromium bro
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: Initialize TypeScript & Vite build configuration with Manifest V3 schema, icons, and package dependencies.
-- [ ] 01-02: Implement background service worker lifecycle, offscreen document manager, and shared typed IPC messaging layer.
+- [x] 01-01: Initialize TypeScript & Vite build configuration with Manifest V3 schema, icons, and package dependencies.
+- [x] 01-02: Implement background service worker lifecycle, offscreen document manager, and shared typed IPC messaging layer.
 
 ---
 
@@ -47,9 +51,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: Implement Canvas / OffscreenCanvas rendering engine with `createImageBitmap`, dimension scaling, and alpha-blending background fill.
-- [ ] 02-02: Implement pure-JS format encoders for BMP, Windows multi-resolution ICO, single-image PDF, and GIF.
-- [ ] 02-03: Integrate native Canvas encoders (PNG, JPEG, WebP, AVIF), add CORS bypass background fetch, and write unit tests for all encoders.
+- [x] 02-01: Implement Canvas / OffscreenCanvas rendering engine with `createImageBitmap`, dimension scaling, and alpha-blending background fill.
+- [x] 02-02: Implement pure-JS format encoders for BMP, Windows multi-resolution ICO, single-image PDF, and GIF.
+- [x] 02-03: Integrate native Canvas encoders (PNG, JPEG, WebP, AVIF), add CORS bypass background fetch, and write unit tests for all encoders.
 
 ---
 
@@ -65,8 +69,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Build DOM element inspector supporting `<img>`, `<picture>`, `srcset` resolution ranking, CSS `background-image`, `<canvas>`, and inline `<svg>`.
-- [ ] 03-02: Implement Alt + Click shortcut listener and content script communication bridge with background service worker.
+- [x] 03-01: Build DOM element inspector supporting `<img>`, `<picture>`, `srcset` resolution ranking, CSS `background-image`, `<canvas>`, and inline `<svg>`.
+- [x] 03-02: Implement Alt + Click shortcut listener and content script communication bridge with background service worker.
 
 ---
 
@@ -81,8 +85,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: Build customizable filename template engine with token interpolation, sanitization, and unit tests.
-- [ ] 04-02: Implement dynamic `chrome.contextMenus` generator and `chrome.downloads` manager in the service worker.
+- [x] 04-01: Build customizable filename template engine with token interpolation, sanitization, and unit tests.
+- [x] 04-02: Implement dynamic `chrome.contextMenus` generator and `chrome.downloads` manager in the service worker.
 
 ---
 
@@ -99,8 +103,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: Build popup interface markup, modern CSS design system, and responsive layout.
-- [ ] 05-02: Implement popup settings state controller, live token preview, quality slider bindings, and `chrome.storage.sync` sync.
+- [x] 05-01: Build popup interface markup, modern CSS design system, and responsive layout.
+- [x] 05-02: Implement popup settings state controller, live token preview, quality slider bindings, and `chrome.storage.sync` sync.
 
 ---
 
@@ -115,8 +119,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: Create comprehensive test fixture web page and end-to-end verification workflows for all image scenarios.
-- [ ] 06-02: Run full automated test suite, verify extension loading in Chromium browser, and generate production zip artifact.
+- [x] 06-01: Create comprehensive test fixture web page and end-to-end verification workflows for all image scenarios.
+- [x] 06-02: Run full automated test suite, verify extension loading in Chromium browser, and generate production zip artifact.
 
 ## Progress
 
@@ -125,13 +129,13 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Project Architecture & Manifest V3 Foundation | 0/2 | Not started | - |
-| 2. Client-Side Conversion Engine & Encoders | 0/3 | Not started | - |
-| 3. DOM Inspection & High-Res Extraction | 0/2 | Not started | - |
-| 4. Context Menu, Download Manager & Filename Engine | 0/2 | Not started | - |
-| 5. Popup Settings Dashboard & Storage Sync | 0/2 | Not started | - |
-| 6. End-to-End Verification, Fixtures & Extension Packaging | 0/2 | Not started | - |
+| 1. Project Architecture & Manifest V3 Foundation | 2/2 | Complete | 2026-08-16 |
+| 2. Client-Side Conversion Engine & Encoders | 3/3 | Complete | 2026-08-16 |
+| 3. DOM Inspection & High-Res Extraction | 2/2 | Complete | 2026-08-16 |
+| 4. Context Menu, Download Manager & Filename Engine | 2/2 | Complete | 2026-08-16 |
+| 5. Popup Settings Dashboard & Storage Sync | 2/2 | Complete | 2026-08-16 |
+| 6. End-to-End Verification, Fixtures & Extension Packaging | 2/2 | Complete | 2026-08-16 |
 
 ---
 *Roadmap defined: 2026-08-16*
-*Last updated: 2026-08-16 after initial creation*
+*Last updated: 2026-08-16 after completing all 6 phases*

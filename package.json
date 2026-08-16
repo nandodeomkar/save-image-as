@@ -1,0 +1,29 @@
+{
+  "name": "save-image-as-extension",
+  "displayName": "Save Image As - Fast Image Converter",
+  "version": "1.0.0",
+  "description": "Instantly convert and download any web image in JPG, PNG, WebP, AVIF, BMP, GIF, ICO, PDF, SVG with a single click.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch --mode development",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "npm run build && node scripts/package-extension.js"
+  },
+  "dependencies": {
+    "jspdf": "^2.5.1",
+    "omggif": "^1.0.10"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^20.12.7",
+    "@types/omggif": "^1.0.4",
+    "jsdom": "^30.0.1",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10",
+    "vitest": "^1.5.0"
+  }
+}

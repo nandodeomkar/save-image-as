@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save Image As - Test Fixtures & Image Lab</title>
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-card: #1e293b;
+      --border-card: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      padding: 2rem;
+      line-height: 1.5;
+    }
+
+    header {
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border-card);
+      padding-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .fixture-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .fixture-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .fixture-card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .fixture-badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(99, 102, 241, 0.2);
+      color: #818cf8;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.25rem;
+    }
+
+    .fixture-card p.description {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .fixture-preview {
+      background: #090d16;
+      border-radius: 0.5rem;
+      min-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      border: 1px dashed #334155;
+    }
+
+    .fixture-preview img,
+    .fixture-preview canvas,
+    .fixture-preview svg {
+      max-width: 100%;
+      max-height: 160px;
+      object-fit: contain;
+    }
+
+    /* CSS Background Fixture Styles */
+    .bg-demo-box {
+      width: 100%;
+      height: 160px;
+      border-radius: 0.5rem;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .hero-bg-class {
+      background-image: url('https://example.com/assets/pattern-mesh.png');
+    }
+
+    .overlay-container {
+      position: relative;
+      width: 100%;
+      height: 160px;
+    }
+
+    .overlay-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .overlay-mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 500;
+      pointer-events: auto;
+    }
+
+    .pseudo-bg-box {
+      position: relative;
+      width: 100%;
+      height: 160px;
+    }
+
+    .pseudo-bg-box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('https://example.com/assets/pseudo-artwork.jpg');
+      background-size: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Save Image As - Test Fixtures Lab</h1>
+    <p class="subtitle">Complete edge-case image test page for DOM inspection, responsive srcset resolution, format conversion, and client-side download testing.</p>
+  </header>
+
+  <main class="fixture-grid">
+
+    <!-- 1. Standard JPEG -->
+    <div class="fixture-card">
+      <h2>Standard JPEG Image <span class="fixture-badge">JPEG</span></h2>
+      <p class="description">Standard photographic image in JPG format.</p>
+      <div class="fixture-preview">
+        <img id="img-jpeg" src="https://example.com/images/mountain-sunset.jpg" alt="Mountain Sunset" width="300" height="150">
+      </div>
+    </div>
+
+    <!-- 2. Transparent PNG -->
+    <div class="fixture-card">
+      <h2>Transparent PNG <span class="fixture-badge">PNG Alpha</span></h2>
+      <p class="description">PNG logo with 32-bit RGBA transparency for alpha background fill testing.</p>
+      <div class="fixture-preview" style="background-color: #1e1b4b;">
+        <img id="img-png-alpha" src="https://example.com/images/logo-transparent.png" alt="Company Logo" width="200" height="80">
+      </div>
+    </div>
+
+    <!-- 3. WebP Image -->
+    <div class="fixture-card">
+      <h2>WebP Next-Gen Image <span class="fixture-badge">WebP</span></h2>
+      <p class="description">Next-generation WebP image serving modern compressed content.</p>
+      <div class="fixture-preview">
+        <img id="img-webp" src="https://example.com/images/nature-wildlife.webp" alt="Nature Wildlife" width="280" height="140">
+      </div>
+    </div>
+
+    <!-- 4. AVIF Image -->
+    <div class="fixture-card">
+      <h2>AVIF Image <span class="fixture-badge">AVIF</span></h2>
+      <p class="description">AV1 Image File Format (AVIF) container.</p>
+      <div class="fixture-preview">
+        <img id="img-avif" src="https://example.com/images/portrait-highres.avif" alt="High Resolution Portrait" width="260" height="150">
+      </div>
+    </div>
+
+    <!-- 5. GIF Format -->
+    <div class="fixture-card">
+      <h2>GIF Animation / Asset <span class="fixture-badge">GIF</span></h2>
+      <p class="description">Graphics Interchange Format (GIF) image.</p>
+      <div class="fixture-preview">
+        <img id="img-gif" src="https://example.com/images/loading-spinner.gif" alt="Animated Spinner" width="120" height="120">
+      </div>
+    </div>
+
+    <!-- 6. BMP Format -->
+    <div class="fixture-card">
+      <h2>Bitmap Image <span class="fixture-badge">BMP</span></h2>
+      <p class="description">Windows Bitmap (BMP) uncompressed graphic.</p>
+      <div class="fixture-preview">
+        <img id="img-bmp" src="https://example.com/images/retro-pixelart.bmp" alt="Retro Pixel Art" width="180" height="120">
+      </div>
+    </div>
+
+    <!-- 7. ICO Format -->
+    <div class="fixture-card">
+      <h2>Favicon Icon <span class="fixture-badge">ICO</span></h2>
+      <p class="description">Windows ICO multi-size icon asset.</p>
+      <div class="fixture-preview">
+        <img id="img-ico" src="https://example.com/images/favicon.ico" alt="Site Favicon" width="64" height="64">
+      </div>
+    </div>
+
+    <!-- 8. External SVG File -->
+    <div class="fixture-card">
+      <h2>External SVG File <span class="fixture-badge">SVG</span></h2>
+      <p class="description">Standalone SVG vector graphic embedded via img tag.</p>
+      <div class="fixture-preview">
+        <img id="img-svg-file" src="https://example.com/images/badge-verified.svg" alt="Verified Badge" width="140" height="140">
+      </div>
+    </div>
+
+    <!-- 9. Responsive srcset with Pixel Densities (1x, 2x, 3x) -->
+    <div class="fixture-card">
+      <h2>Responsive srcset (Density) <span class="fixture-badge">srcset 1x/2x/3x</span></h2>
+      <p class="description">Pixel density descriptor resolution targeting retina displays.</p>
+      <div class="fixture-preview">
+        <img id="img-srcset-density"
+             src="https://example.com/images/hero-1x.jpg"
+             srcset="https://example.com/images/hero-1x.jpg 1x, https://example.com/images/hero-2x.jpg 2x, https://example.com/images/hero-3x.jpg 3x"
+             alt="Responsive Density Hero"
+             width="300" height="150">
+      </div>
+    </div>
+
+    <!-- 10. Responsive srcset with Widths and Query Commas -->
+    <div class="fixture-card">
+      <h2>Responsive srcset (Width + Query) <span class="fixture-badge">srcset widths</span></h2>
+      <p class="description">Width descriptors with CDN query parameters containing commas.</p>
+      <div class="fixture-preview">
+        <img id="img-srcset-width"
+             src="https://example.com/images/photo.jpg?w=320"
+             srcset="https://example.com/images/photo.jpg?w=320&filter=sharp(1,2) 320w, https://example.com/images/photo.jpg?w=640&filter=sharp(1,2) 640w, https://example.com/images/photo.jpg?w=1920&filter=sharp(1,2) 1920w"
+             sizes="(max-width: 600px) 320px, 1920px"
+             alt="Responsive Widths"
+             width="300" height="150">
+      </div>
+    </div>
+
+    <!-- 11. Responsive Picture Element with Multiple Sources -->
+    <div class="fixture-card">
+      <h2>Responsive Picture Element <span class="fixture-badge">&lt;picture&gt;</span></h2>
+      <p class="description">Picture tag with AVIF, WebP and fallback JPEG sources.</p>
+      <div class="fixture-preview">
+        <picture id="picture-responsive">
+          <source type="image/avif" srcset="https://example.com/images/modern-art-4k.avif 2x, https://example.com/images/modern-art-2k.avif 1x">
+          <source type="image/webp" srcset="https://example.com/images/modern-art-4k.webp 2x, https://example.com/images/modern-art-2k.webp 1x">
+          <img id="picture-img" src="https://example.com/images/modern-art-fallback.jpg" alt="Modern Artwork" width="300" height="150">
+        </picture>
+      </div>
+    </div>
+
+    <!-- 12. CSS Background Image (Inline Style) -->
+    <div class="fixture-card">
+      <h2>CSS Background (Inline) <span class="fixture-badge">CSS bg</span></h2>
+      <p class="description">Container styled with inline background-image URL.</p>
+      <div class="fixture-preview">
+        <div id="bg-inline" class="bg-demo-box" style="background-image: url('https://example.com/assets/inline-banner.jpg');"></div>
+      </div>
+    </div>
+
+    <!-- 13. CSS Background Image (Class) -->
+    <div class="fixture-card">
+      <h2>CSS Background (Class) <span class="fixture-badge">CSS class</span></h2>
+      <p class="description">Container styled via CSS class rule.</p>
+      <div class="fixture-preview">
+        <div id="bg-class" class="bg-demo-box hero-bg-class"></div>
+      </div>
+    </div>
+
+    <!-- 14. CSS Background (Pseudo-element) -->
+    <div class="fixture-card">
+      <h2>CSS Pseudo-Element Background <span class="fixture-badge">::before</span></h2>
+      <p class="description">Background image applied to ::before pseudo element.</p>
+      <div class="fixture-preview">
+        <div id="bg-pseudo" class="pseudo-bg-box"></div>
+      </div>
+    </div>
+
+    <!-- 15. HTML5 Canvas Dynamic Rendering -->
+    <div class="fixture-card">
+      <h2>HTML5 Canvas Element <span class="fixture-badge">&lt;canvas&gt;</span></h2>
+      <p class="description">Interactive client-side drawn canvas graphic.</p>
+      <div class="fixture-preview">
+        <canvas id="canvas-dynamic" width="300" height="150"></canvas>
+      </div>
+    </div>
+
+    <!-- 16. Inline SVG Graphic -->
+    <div class="fixture-card">
+      <h2>Inline SVG Vector <span class="fixture-badge">Inline &lt;svg&gt;</span></h2>
+      <p class="description">Vector icon with defs, linear gradient, and shapes.</p>
+      <div class="fixture-preview">
+        <svg id="svg-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 100" width="200" height="100">
+          <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <rect width="200" height="100" rx="12" fill="url(#grad1)" />
+          <circle cx="100" cy="50" r="30" fill="#ffffff" opacity="0.9" />
+          <path d="M 90 40 L 115 50 L 90 60 Z" fill="#6366f1" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- 17. Base64 Data URI -->
+    <div class="fixture-card">
+      <h2>Base64 Data URI <span class="fixture-badge">data: URI</span></h2>
+      <p class="description">Image embedded directly as an inline data: URI.</p>
+      <div class="fixture-preview">
+        <img id="img-data-uri"
+             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
+             alt="Data URI Icon"
+             width="100" height="100">
+      </div>
+    </div>
+
+    <!-- 18. Overlay Mask / Nested Element (Instagram / Twitter style) -->
+    <div class="fixture-card">
+      <h2>Nested Overlay Mask <span class="fixture-badge">Nested DOM</span></h2>
+      <p class="description">Image covered by an absolute overlay div.</p>
+      <div class="fixture-preview">
+        <div id="container-overlay" class="overlay-container">
+          <img id="img-nested-overlay" src="https://example.com/images/feed-photo.jpg" alt="Social Feed Photo">
+          <div id="overlay-mask-child" class="overlay-mask">Click Overlay</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 19. Cross-Origin CDN Image -->
+    <div class="fixture-card">
+      <h2>Cross-Origin CDN Image <span class="fixture-badge">CORS</span></h2>
+      <p class="description">Image loaded from external CDN without CORS headers.</p>
+      <div class="fixture-preview">
+        <img id="img-cors" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800" alt="Unsplash Landscape" width="280" height="140">
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Initialize Canvas Fixture graphics
+    const canvas = document.getElementById('canvas-dynamic');
+    if (canvas && canvas.getContext) {
+      const ctx = canvas.getContext('2d');
+      // Background gradient
+      const grad = ctx.createLinearGradient(0, 0, 300, 150);
+      grad.addColorStop(0, '#1e293b');
+      grad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 300, 150);
+
+      // Draw accent circles
+      ctx.fillStyle = '#6366f1';
+      ctx.beginPath();
+      ctx.arc(80, 75, 40, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#10b981';
+      ctx.beginPath();
+      ctx.arc(160, 75, 30, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(230, 75, 25, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Text label
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px sans-serif';
+      ctx.fillText('HTML5 Canvas Fixture', 80, 140);
+    }
+  </script>
+</body>
+</html>
