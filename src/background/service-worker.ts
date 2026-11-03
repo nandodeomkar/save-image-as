@@ -1,4 +1,5 @@
 import { getSettings, initializeSettings, onSettingsChanged } from '../utils/storage';
+import { allowBackgroundMessage } from '../utils/message-policy';
 import {
   ExtensionMessage,
   FetchImageRequestMessage,
@@ -87,10 +88,10 @@ onSettingsChanged((settings) => {
 chrome.runtime.onMessage.addListener(
   (
     message: ExtensionMessage,
-    _sender: chrome.runtime.MessageSender,
+    sender: chrome.runtime.MessageSender,
     sendResponse: (response: any) => void
   ): boolean | void => {
-    if (!message || !message.type) {
+    if (!allowBackgroundMessage(message, sender)) {
       return;
     }
 

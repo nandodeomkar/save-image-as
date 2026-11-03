@@ -5,6 +5,7 @@ import {
   OffscreenPongMessage
 } from '../utils/types';
 import { convertImage } from './converter';
+import { isWorkerSender, validMessage, validConversion } from '../utils/message-policy';
 
 console.info('[Offscreen] Offscreen conversion document initialized.');
 
@@ -14,10 +15,10 @@ console.info('[Offscreen] Offscreen conversion document initialized.');
 chrome.runtime.onMessage.addListener(
   (
     message: ExtensionMessage,
-    _sender: chrome.runtime.MessageSender,
+    sender: chrome.runtime.MessageSender,
     sendResponse: (response: any) => void
   ): boolean | void => {
-    if (!message || !message.type) {
+    if (!isWorkerSender(sender) || !validMessage(message)) {
       return;
     }
 
@@ -34,6 +35,7 @@ chrome.runtime.onMessage.addListener(
 
     // Image conversion request handler
     if (message.type === 'CONVERT_IMAGE_REQUEST') {
+      if (!validConversion(message)) return false;
       handleConvertRequest(message as ConvertImageRequestMessage)
         .then((response) => sendResponse(response))
         .catch((error) => {

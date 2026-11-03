@@ -36,6 +36,8 @@ export const mockStorageArea = {
 // Global Chrome API Mock
 const mockChrome = {
   runtime: {
+    id: 'test-extension',
+    getURL: (path: string) => `chrome-extension://test-extension/${path}`,
     lastError: null as { message?: string } | null,
     sendMessage: vi.fn(),
     openOptionsPage: vi.fn(),
