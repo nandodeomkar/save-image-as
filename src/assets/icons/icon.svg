@@ -1,30 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-labelledby="title">
+  <title id="title">Save Image As</title>
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4F46E5" />
-      <stop offset="50%" stop-color="#3B82F6" />
-      <stop offset="100%" stop-color="#06B6D4" />
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#4f46e5"/>
+      <stop offset="1" stop-color="#06b6d4"/>
     </linearGradient>
-    <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" />
-      <stop offset="100%" stop-color="#E0F2FE" />
-    </linearGradient>
-    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.3" />
-    </filter>
   </defs>
-
-  <!-- Base Rounded Container -->
-  <rect x="8" y="8" width="112" height="112" rx="28" fill="url(#bgGrad)" filter="url(#dropShadow)" />
-
-  <!-- Inner Image Card Frame -->
-  <rect x="22" y="22" width="84" height="84" rx="16" fill="#0F172A" fill-opacity="0.25" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="2" />
-
-  <!-- Image Landscape Artwork (Mountain / Sun) -->
-  <circle cx="44" cy="46" r="8" fill="#FDE047" />
-  <path d="M26 84 L52 54 L70 72 L82 60 L102 84 Z" fill="#FFFFFF" fill-opacity="0.85" />
-
-  <!-- Overlay Download Badge -->
-  <circle cx="88" cy="88" r="22" fill="#4F46E5" stroke="#FFFFFF" stroke-width="3" filter="url(#dropShadow)" />
-  <path d="M88 76 L88 94 M82 89 L88 95 L94 89 M80 98 L96 98" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+  <rect x="8" y="8" width="84" height="84" rx="22" fill="url(#background)"/>
+  <circle cx="38" cy="38" r="8" fill="#fde047"/>
+  <path d="M22 75 42 47 62 75Z" fill="#fff" opacity=".9"/>
+  <path d="M50 75 65 53 80 75Z" fill="#fff" opacity=".95"/>
+  <circle cx="72" cy="72" r="19" fill="#4f46e5" stroke="#fff" stroke-width="2"/>
+  <path d="M72 60v16m-8-7 8 8 8-8M62 84h20" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
