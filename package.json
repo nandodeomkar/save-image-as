@@ -13,6 +13,7 @@
     "package": "npm run build && node scripts/package-extension.js"
   },
   "dependencies": {
+    "@jsquash/avif": "2.1.1",
     "jspdf": "^2.5.1",
     "omggif": "^1.0.10"
   },

@@ -46,6 +46,12 @@ describe('Manifest V3 build output', () => {
     }
   });
 
+  it('packages the AVIF wasm locally under a restrictive MV3 script policy', async () => {
+    expect(manifest.content_security_policy?.extension_pages).toBe("script-src 'self' 'wasm-unsafe-eval'; object-src 'self';");
+    const wasm = await readFile(join(outputDir, 'assets/avif_enc.wasm'));
+    expect([...wasm.subarray(0, 4)]).toEqual([0, 97, 115, 109]);
+  });
+
   it('emits content scripts that Chrome can parse as classic JavaScript', async () => {
     for (const script of manifest.content_scripts!.flatMap(entry => entry.js ?? [])) {
       const code = await readFile(join(outputDir, script), 'utf8');

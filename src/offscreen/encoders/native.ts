@@ -19,29 +19,29 @@ export async function encodeNative(
   format: NativeSupportedFormat,
   quality?: number
 ): Promise<Blob> {
-  const mimeType = NATIVE_MIME_TYPES[format] || 'image/png';
+  const mimeType = NATIVE_MIME_TYPES[format];
+  if (!mimeType) throw new Error(`Unsupported native format: ${format}`);
 
   // Sanitize quality parameter (clamped 0.01 to 1.0)
   let q: number | undefined;
-  if (format !== 'png' && typeof quality === 'number') {
+  if (format !== 'png' && typeof quality === 'number' && Number.isFinite(quality)) {
     q = Math.max(0.01, Math.min(1.0, quality));
   }
 
   // Handle OffscreenCanvas
   if ('convertToBlob' in canvas) {
     try {
-      return await (canvas as OffscreenCanvas).convertToBlob({
+      const blob = await (canvas as OffscreenCanvas).convertToBlob({
         type: mimeType,
         quality: q
       });
+      if (blob.type === mimeType) return blob;
+      throw new Error(`Browser cannot encode ${mimeType}`);
     } catch (err) {
       // Fallback for AVIF if browser engine does not support AVIF encoding
       if (format === 'avif') {
-        console.warn('[Encoders] AVIF encoding unsupported, falling back to WebP', err);
-        return await (canvas as OffscreenCanvas).convertToBlob({
-          type: 'image/webp',
-          quality: q
-        });
+        const { encodeAvif } = await import('./avif');
+        return encodeAvif(canvas, q);
       }
       throw err;
     }
@@ -55,20 +55,14 @@ export async function encodeNative(
           if (blob) {
             // Check if AVIF fallback is needed (some browsers return empty or fallback to PNG)
             if (format === 'avif' && blob.type !== 'image/avif') {
-              console.warn('[Encoders] AVIF fallback triggered, using WebP');
-              (canvas as HTMLCanvasElement).toBlob(
-                (fallbackBlob) => {
-                  if (fallbackBlob) resolve(fallbackBlob);
-                  else resolve(blob);
-                },
-                'image/webp',
-                q
-              );
+              import('./avif').then(({ encodeAvif }) => encodeAvif(canvas, q)).then(resolve, reject);
               return;
             }
-            resolve(blob);
+            if (blob.type === mimeType) resolve(blob);
+            else reject(new Error(`Browser cannot encode ${mimeType}; refusing a different format`));
           } else {
-            reject(new Error(`Failed to encode canvas to ${mimeType}`));
+            if (format === 'avif') import('./avif').then(({ encodeAvif }) => encodeAvif(canvas, q)).then(resolve, reject);
+            else reject(new Error(`Failed to encode canvas to ${mimeType}`));
           }
         },
         mimeType,

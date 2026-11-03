@@ -1,5 +1,8 @@
 {
   "manifest_version": 3,
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
   "name": "Save Image As - Fast Image Converter",
   "version": "1.0.0",
   "description": "Instantly convert and download any web image in JPG, PNG, WebP, AVIF, BMP, GIF, ICO, PDF, SVG with a single click.",
