@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-11-03T12:48:11.958Z",
+  "checked_at": "2026-11-03T13:47:49.688Z",
   "checks": [
     "Manifest V3 service worker starts",
     "Installation persists default settings in chrome.storage.sync",
