@@ -59,9 +59,9 @@ describe('SVG Loader & Parser', () => {
 
 describe('Image Loader', () => {
   it('fetches remote SVG through the worker and preserves vector source', async () => {
-    vi.mocked(chrome.runtime.sendMessage).mockImplementationOnce((request: any, callback: any) => {
+    vi.mocked(chrome.runtime.sendMessage).mockImplementationOnce(((request: any, callback: any) => {
       callback({ type: 'FETCH_IMAGE_RESPONSE', id: request.id, success: true, dataUrl: 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg viewBox="0 0 40 20"><path d="M0 0"/></svg>') });
-    });
+    }) as any);
     const loaded = await loadImage({ type: 'url', data: 'https://example.com/vector.svg' });
     expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(expect.objectContaining({ type: 'FETCH_IMAGE_REQUEST', url: 'https://example.com/vector.svg' }), expect.any(Function));
     expect(loaded.isSvg).toBe(true);
