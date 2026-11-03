@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-11-03T12:48:11.958Z",
+  "checks": [
+    "Manifest V3 service worker starts",
+    "Installation persists default settings in chrome.storage.sync",
+    "Popup loads and service worker creates the offscreen document for a real Canvas conversion",
+    "Exactly one offscreen document exists and returns a correlated, timestamped pong to the service worker",
+    "Built classic content script loads on an HTTP page and answers a correlated inspection request without page errors"
+  ],
+  "status": "passed",
+  "browser": "151.0.7922.34"
+}
