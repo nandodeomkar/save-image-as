@@ -66,4 +66,27 @@ describe('Offscreen Document Manager', () => {
 
     expect(chrome.offscreen.closeDocument).toHaveBeenCalledTimes(1);
   });
+
+  it('releases the creation mutex after failure so a later request can retry', async () => {
+    (chrome.offscreen.hasDocument as any).mockResolvedValue(false);
+    (chrome.offscreen.createDocument as any)
+      .mockRejectedValueOnce(new Error('Document could not load'))
+      .mockResolvedValueOnce(undefined);
+
+    await expect(ensureOffscreenDocument()).rejects.toThrow('Document could not load');
+    await ensureOffscreenDocument();
+    expect(chrome.offscreen.createDocument).toHaveBeenCalledTimes(2);
+  });
+
+  it('uses runtime contexts when hasDocument is unavailable', async () => {
+    const hasDocument = chrome.offscreen.hasDocument;
+    delete (chrome.offscreen as Partial<typeof chrome.offscreen>).hasDocument;
+    (chrome.runtime.getContexts as any).mockResolvedValue([{ contextType: 'OFFSCREEN_DOCUMENT' }]);
+    try {
+      expect(await hasOffscreenDocument()).toBe(true);
+      expect(chrome.runtime.getContexts).toHaveBeenCalledWith({ contextTypes: ['OFFSCREEN_DOCUMENT'] });
+    } finally {
+      chrome.offscreen.hasDocument = hasDocument;
+    }
+  });
 });
