@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { encodeGif } from '../src/offscreen/encoders/gif';
 import { MockImageData } from './setup';
+import { GifReader } from 'omggif';
 
 describe('Pure-JS GIF Encoder', () => {
   it('encodes ImageData into a valid GIF89a file', () => {
@@ -46,5 +47,9 @@ describe('Pure-JS GIF Encoder', () => {
     const result = encodeGif(imgData);
     expect(result.blob.type).toBe('image/gif');
     expect(result.bytes.length).toBeGreaterThan(0);
+    const reader = new GifReader(result.bytes as any);
+    const decoded = new Uint8Array(16);
+    reader.decodeAndBlitFrameRGBA(0, decoded as any);
+    expect(Array.from(decoded)).toEqual([255, 0, 0, 255, 0, 0, 0, 0, 0, 0, 255, 255, 0, 0, 0, 0]);
   });
 });

@@ -53,6 +53,9 @@ export async function encodeIco(
   options?: IcoEncodeOptions
 ): Promise<IcoEncodeResult> {
   const targetSizes = options?.sizes || [16, 32, 48, 256];
+  if (!targetSizes.length || targetSizes.some(size => !Number.isInteger(size) || size < 1 || size > 256)) {
+    throw new Error('ICO sizes must be integers between 1 and 256');
+  }
   const pngEntries: { size: number; bytes: Uint8Array }[] = [];
 
   for (const size of targetSizes) {
@@ -63,8 +66,13 @@ export async function encodeIco(
     // Draw source scaled to icon size
     ctx.drawImage(source as any, 0, 0, size, size);
 
-    const bytes = await canvasToPngBytes(canvas);
-    pngEntries.push({ size, bytes });
+    try {
+      const bytes = await canvasToPngBytes(canvas);
+      pngEntries.push({ size, bytes });
+    } finally {
+      canvas.width = 1;
+      canvas.height = 1;
+    }
   }
 
   const numImages = pngEntries.length;

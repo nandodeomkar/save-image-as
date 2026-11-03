@@ -2,6 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { encodeIco } from '../src/offscreen/encoders/ico';
 
 describe('Windows Multi-Resolution ICO Encoder', () => {
+  it.each([[], [0], [257], [1.5]])('rejects invalid icon sizes %j', async (...sizes) => {
+    await expect(encodeIco({ width: 20, height: 20 } as any, { sizes: sizes as number[] })).rejects.toThrow('ICO sizes');
+  });
   it('generates a valid ICO container with specified sizes', async () => {
     const mockImage = { width: 512, height: 512 } as any;
     const sizes = [16, 32, 48, 256];
