@@ -1,4 +1,4 @@
-import { getSettings, saveSettings } from '../utils/storage';
+import { getSettings, saveSettings, onSettingsChanged } from '../utils/storage';
 import {
   ExtensionMessage,
   FetchImageRequestMessage,
@@ -9,7 +9,7 @@ import {
   DownloadImageResponseMessage,
   QuickSaveImageRequestMessage,
   QuickSaveImageResponseMessage,
-  DEFAULT_SETTINGS
+  ExtensionSettings
 } from '../utils/types';
 import {
   createContextMenus,
@@ -24,21 +24,23 @@ import {
 
 console.info('[ServiceWorker] Save Image As background service worker starting...');
 
+// Install/startup/storage events can overlap; serialize remove-and-create menu updates.
+let menuUpdate: Promise<void> = Promise.resolve();
+function updateContextMenus(settings: ExtensionSettings): Promise<void> {
+  menuUpdate = menuUpdate.catch(() => {}).then(() => createContextMenus(settings));
+  return menuUpdate;
+}
+
 /**
  * Handle Extension Installation / Update
  */
 chrome.runtime.onInstalled.addListener(async (details) => {
   console.info(`[ServiceWorker] onInstalled triggered (reason: ${details.reason})`);
 
-  // Initialize default settings if first run
+  // Persist defaults on first install while preserving preferences on updates.
   const settings = await getSettings();
-  if (!settings.enabledFormats || settings.enabledFormats.length === 0) {
-    await saveSettings(DEFAULT_SETTINGS);
-    console.info('[ServiceWorker] Default settings initialized in chrome.storage.');
-    await createContextMenus(DEFAULT_SETTINGS);
-  } else {
-    await createContextMenus(settings);
-  }
+  await saveSettings(settings);
+  await updateContextMenus(settings);
 });
 
 /**
@@ -47,14 +49,14 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 chrome.runtime.onStartup.addListener(async () => {
   console.info('[ServiceWorker] Extension started.');
   const settings = await getSettings();
-  await createContextMenus(settings);
+  await updateContextMenus(settings);
 });
 
 // Initialize context menus when service worker wakes up
 (async () => {
   try {
     const settings = await getSettings();
-    await createContextMenus(settings);
+    await updateContextMenus(settings);
   } catch (err) {
     console.warn('[ServiceWorker] Initial context menu setup notice:', err);
   }
@@ -70,17 +72,11 @@ if (typeof chrome !== 'undefined' && chrome.contextMenus && chrome.contextMenus.
 /**
  * Listen for storage updates to dynamically sync context menus in real time
  */
-if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
-  chrome.storage.onChanged.addListener(async (changes, areaName) => {
-    if (areaName === 'sync' || areaName === 'local') {
-      if (changes.enabledFormats || changes.defaultFormat || changes.filenameTemplate) {
-        console.info('[ServiceWorker] Settings changed in storage, updating context menus...');
-        const updatedSettings = await getSettings();
-        await createContextMenus(updatedSettings);
-      }
-    }
+onSettingsChanged((settings) => {
+  void updateContextMenus(settings).catch((err) => {
+    console.warn('[ServiceWorker] Could not update context menus:', err);
   });
-}
+});
 
 /**
  * Handle IPC Messages from Content Scripts, Popup, or other extension contexts
