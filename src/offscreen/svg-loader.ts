@@ -21,11 +21,32 @@ export interface SvgInfo {
  * Parse SVG attributes (width, height, viewBox) and sanitize SVG markup
  */
 export function parseSvg(svgString: string): SvgInfo {
-  const trimmed = svgString.trim();
+  const document = new DOMParser().parseFromString(svgString.trim(), 'image/svg+xml');
+  const root = document.documentElement;
+  if (document.querySelector('parsererror') || root.localName !== 'svg') {
+    throw new Error('Invalid SVG markup');
+  }
+  // Preserve vector geometry while removing executable content and external resources.
+  for (const element of Array.from(root.querySelectorAll('*'))) {
+    if (['script', 'foreignobject', 'iframe', 'object', 'embed', 'style', 'animate', 'animatetransform', 'animatemotion', 'set'].includes(element.localName.toLowerCase())) element.remove();
+  }
+  for (const element of [root, ...Array.from(root.querySelectorAll('*'))]) {
+    for (const attribute of Array.from(element.attributes)) {
+      const name = attribute.localName.toLowerCase();
+      const value = attribute.value.trim();
+      if (name.startsWith('on') || name === 'style' || name === 'base' ||
+          ((name === 'href' || name === 'src') && !value.startsWith('#')) ||
+          (/url\s*\(/i.test(value) && !/^url\(\s*['"]?#[\w.-]+['"]?\s*\)$/i.test(value))) {
+        element.removeAttributeNode(attribute);
+      }
+    }
+  }
+  root.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  const trimmed = new XMLSerializer().serializeToString(root);
 
   // Extract viewBox
   let viewBox: SvgViewBox | undefined;
-  const viewBoxMatch = trimmed.match(/viewBox\s*=\s*["']([^"']+)["']/i);
+  const viewBoxMatch = root.getAttribute('viewBox') ? ['', root.getAttribute('viewBox')!] : null;
   if (viewBoxMatch) {
     const parts = viewBoxMatch[1].trim().split(/[\s,]+/).map(Number);
     if (parts.length === 4 && parts.every((n) => !isNaN(n) && isFinite(n))) {
@@ -42,7 +63,7 @@ export function parseSvg(svgString: string): SvgInfo {
   let width: number | undefined;
   let height: number | undefined;
 
-  const widthMatch = trimmed.match(/(?:^|\s)width\s*=\s*["']([^"']+)["']/i);
+  const widthMatch = /^([\d.]+)(?:px)?$/.exec(root.getAttribute('width') || '');
   if (widthMatch) {
     const val = parseFloat(widthMatch[1]);
     if (!isNaN(val) && val > 0) {
@@ -50,7 +71,7 @@ export function parseSvg(svgString: string): SvgInfo {
     }
   }
 
-  const heightMatch = trimmed.match(/(?:^|\s)height\s*=\s*["']([^"']+)["']/i);
+  const heightMatch = /^([\d.]+)(?:px)?$/.exec(root.getAttribute('height') || '');
   if (heightMatch) {
     const val = parseFloat(heightMatch[1]);
     if (!isNaN(val) && val > 0) {
@@ -92,10 +113,10 @@ export function parseSvg(svgString: string): SvgInfo {
   }
 
   // Ensure width and height or viewBox are declared on the root SVG element
-  if (!/viewBox\s*=/i.test(sanitizedSvg) && viewBox) {
+  if (!root.hasAttribute('viewBox')) {
     sanitizedSvg = sanitizedSvg.replace(
       /<svg\b([^>]*)>/i,
-      `<svg viewBox="${viewBox.minX} ${viewBox.minY} ${viewBox.width} ${viewBox.height}" $1>`
+      `<svg viewBox="0 0 ${finalWidth} ${finalHeight}" $1>`
     );
   }
 
@@ -122,9 +143,10 @@ export async function rasterizeSvg(
 
   // Insert explicit width and height if needed
   let rasterSvg = parsed.svgString;
-  if (!/(?:^|\s)width\s*=/i.test(rasterSvg)) {
-    rasterSvg = rasterSvg.replace(/<svg\b([^>]*)>/i, `<svg width="${width}" height="${height}" $1>`);
-  }
+  const document = new DOMParser().parseFromString(rasterSvg, 'image/svg+xml');
+  document.documentElement.setAttribute('width', String(width));
+  document.documentElement.setAttribute('height', String(height));
+  rasterSvg = new XMLSerializer().serializeToString(document.documentElement);
 
   const blob = new Blob([rasterSvg], { type: 'image/svg+xml;charset=utf-8' });
   const blobUrl = URL.createObjectURL(blob);

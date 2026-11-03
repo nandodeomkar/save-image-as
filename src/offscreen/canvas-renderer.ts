@@ -88,6 +88,9 @@ export function createCanvas(width: number, height: number): {
   canvas: HTMLCanvasElement | OffscreenCanvas;
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
 } {
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0 || width * height > 64 * 1024 * 1024) {
+    throw new Error('Image dimensions exceed the supported canvas limit');
+  }
   const w = Math.max(1, Math.round(width));
   const h = Math.max(1, Math.round(height));
 

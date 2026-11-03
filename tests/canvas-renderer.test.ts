@@ -1,9 +1,21 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { parseSvg, rasterizeSvg } from '../src/offscreen/svg-loader';
 import { loadImage, base64ToUint8Array, uint8ArrayToDataUrl } from '../src/offscreen/image-loader';
 import { scaleDimensions, renderImageToCanvas } from '../src/offscreen/canvas-renderer';
 
 describe('SVG Loader & Parser', () => {
+  it('uses root dimensions rather than dimensions on child shapes', () => {
+    const info = parseSvg('<svg viewBox="0 0 400 200"><rect width="5" height="6"/></svg>');
+    expect([info.width, info.height]).toEqual([400, 200]);
+  });
+
+  it('removes active markup and external resources while preserving vectors', () => {
+    const info = parseSvg('<svg width="20" height="10" onload="alert(1)"><script>alert(1)</script><foreignObject><div>unsafe</div></foreignObject><image href="https://example.com/a"/><path id="shape" d="M0 0" fill="url(https://example.com/a)"/><use href="#shape"/></svg>');
+    expect(info.svgString).not.toMatch(/onload|script|foreignObject|https:/);
+    expect(info.svgString).toContain('href="#shape"');
+    expect(info.svgString).toContain('viewBox="0 0 20 10"');
+    expect(() => parseSvg('<not-svg/>')).toThrow('Invalid SVG');
+  });
   it('parses SVG with explicit width and height', () => {
     const svg = '<svg width="400" height="200"><rect width="100%" height="100%" fill="red"/></svg>';
     const info = parseSvg(svg);
@@ -46,6 +58,22 @@ describe('SVG Loader & Parser', () => {
 });
 
 describe('Image Loader', () => {
+  it('fetches remote SVG through the worker and preserves vector source', async () => {
+    vi.mocked(chrome.runtime.sendMessage).mockImplementationOnce((request: any, callback: any) => {
+      callback({ type: 'FETCH_IMAGE_RESPONSE', id: request.id, success: true, dataUrl: 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent('<svg viewBox="0 0 40 20"><path d="M0 0"/></svg>') });
+    });
+    const loaded = await loadImage({ type: 'url', data: 'https://example.com/vector.svg' });
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(expect.objectContaining({ type: 'FETCH_IMAGE_REQUEST', url: 'https://example.com/vector.svg' }), expect.any(Function));
+    expect(loaded.isSvg).toBe(true);
+    expect(loaded.rawSvg).toContain('<path');
+    expect([loaded.width, loaded.height]).toEqual([40, 20]);
+    loaded.cleanup();
+  });
+
+  it('surfaces worker fetch failures without attempting an unsafe image load', async () => {
+    vi.mocked(chrome.runtime.sendMessage).mockImplementationOnce((request: any, callback: any) => callback({ type: 'FETCH_IMAGE_RESPONSE', id: request.id, success: false, error: 'HTTP 404' }));
+    await expect(loadImage('https://example.com/missing.png')).rejects.toThrow('HTTP 404');
+  });
   it('converts base64 to Uint8Array and back to Data URL', () => {
     const originalText = 'SaveImageAs';
     const base64 = btoa(originalText);

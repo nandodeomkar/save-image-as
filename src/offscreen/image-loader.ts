@@ -3,6 +3,9 @@
  */
 
 import { parseSvg, rasterizeSvg } from './svg-loader';
+import { sendMessage, generateMessageId } from '../utils/messaging';
+import { FetchImageRequestMessage, FetchImageResponseMessage } from '../utils/types';
+import { isNetworkImageUrl } from '../utils/message-policy';
 
 export type ImageSourcePayload =
   | string
@@ -65,7 +68,7 @@ export async function loadImage(source: ImageSourcePayload): Promise<LoadedImage
       // Decode SVG from data URL if needed
       if (trimmed.includes(';base64,')) {
         const base64 = trimmed.split(';base64,')[1];
-        data = atob(base64);
+        data = new TextDecoder().decode(base64ToUint8Array(base64));
       } else {
         data = decodeURIComponent(trimmed.split(',')[1] || '');
       }
@@ -79,6 +82,23 @@ export async function loadImage(source: ImageSourcePayload): Promise<LoadedImage
   } else {
     sourceType = source.type;
     data = source.data;
+  }
+
+  // Remote bytes are fetched by the worker with host permissions, then decoded locally.
+  // This also preserves SVG source instead of accidentally wrapping a raster preview.
+  if (sourceType === 'url' && isNetworkImageUrl(data)) {
+    const response = await sendMessage<FetchImageResponseMessage, FetchImageRequestMessage>({
+      type: 'FETCH_IMAGE_REQUEST', id: generateMessageId('fetch'), url: data
+    });
+    if (!response.success || !response.dataUrl) throw new Error(response.error || 'Image fetch failed');
+    return loadImage(response.dataUrl);
+  }
+  if ((sourceType === 'url' || sourceType === 'data-url') && data.startsWith('data:image/svg+xml')) {
+    const comma = data.indexOf(',');
+    const payload = data.slice(comma + 1);
+    data = data.slice(0, comma).includes(';base64')
+      ? new TextDecoder().decode(base64ToUint8Array(payload)) : decodeURIComponent(payload);
+    sourceType = 'svg-string';
   }
 
   // Case 1: SVG String
