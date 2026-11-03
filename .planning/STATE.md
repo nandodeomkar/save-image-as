@@ -1,91 +1,68 @@
 ---
-gsd_state_version: '1.0'
-status: project_complete
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+current_phase: 02
+current_phase_name: Client-Side Conversion Engine & Encoders
+status: ready_to_execute
+last_updated: "2026-11-03T12:57:43.991Z"
+last_activity: 2026-11-03
+last_activity_desc: Phase 1 verified; completion evidence reconciled
 progress:
   total_phases: 6
-  completed_phases: 6
+  completed_phases: 1
   total_plans: 13
-  completed_plans: 13
-  percent: 100
+  completed_plans: 2
+  percent: 15
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-08-16)
+See: .planning/PROJECT.md (updated 2026-11-03)
 
-**Core value:** Instantly convert and download any web image into any desired format with a single click, completely locally and client-side.
-**Current focus:** Project Milestone Complete — Extension Production Ready & Packaged
+**Core value:** Instantly convert and download web images locally.
+**Current focus:** Phase 1 verified; security audit is required before advancing. Phase 2 already has three plans and existing implementation to inspect.
 
 ## Current Position
 
-Phase: 6 of 6 (End-to-End Verification, Fixtures & Extension Packaging) — COMPLETE
-Plan: 2 of 2 in current phase (06-01, 06-02 executed & verified)
-Status: All 6 project phases executed successfully; extension fully tested & packaged
-Last activity: 2026-08-16 — Phase 6 completed with comprehensive HTML test fixtures lab, full end-to-end integration test suite, zero-dependency ZIP packager, Manifest V3 validation, and 146 automated tests passing at 100%
+Phase: 02 — Client-Side Conversion Engine & Encoders
+Plan: 0 of 3 documented complete
+Status: Existing implementation; execution evidence pending
+Last activity: 2026-11-03 — Phase 1 completed with two summaries, clean review, 162 passing tests, production build, and Chromium runtime verification.
 
-Progress: [██████████] 100%
+Progress: [█░░░░░░░░░] 15% (2/13 plan summaries; 1/6 phases verified)
 
-## Performance Metrics
+## Evidence Reconciliation
 
-**Velocity:**
-- Total plans completed: 13
-- Average duration: ~5 min
-- Total execution time: ~0.65 hours
-
-**By Phase:**
-
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| Phase 1: Project Architecture & Manifest V3 Foundation | 2/2 | 10m | 5m |
-| Phase 2: Client-Side Conversion Engine & Encoders | 3/3 | 15m | 5m |
-| Phase 3: DOM Inspection & High-Res Extraction | 2/2 | 10m | 5m |
-| Phase 4: Context Menu, Download Manager & Filename Engine | 2/2 | 10m | 5m |
-| Phase 5: Popup Settings Dashboard & Storage Sync | 2/2 | 10m | 5m |
-| Phase 6: End-to-End Verification, Fixtures & Extension Packaging | 2/2 | 10m | 5m |
-
-**Recent Trend:**
-- Last 5 plans: 04-02, 05-01, 05-02, 06-01, 06-02
-- Trend: Stable & Complete
-
-*Updated after each plan completion*
+The August 16 state claimed all six phases complete with 146 passing tests, but no plan summaries or phase verification reports existed. Source code and the old release archive were present. Phase 1 now has current evidence. Phases 2–6 must be checked against their existing code; missing records do not imply a need to rebuild them.
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
-
-- [Init]: Chrome Manifest V3 Offscreen Architecture for reliable Canvas conversions
-- [Init]: 100% Client-Side Conversion for privacy, zero backend cost, and offline performance
-- [Phase 3]: Responsive srcset candidate parser with query-param comma safety and descriptor normalization
-- [Phase 4]: Dynamic context menu hierarchy syncing in real time with chrome.storage.onChanged
-- [Phase 4]: Multi-platform filename engine supporting rich tokens ([name], [ext], [domain], [date], [dimensions]), Windows reserved device names, and live UI preview helper
-- [Phase 5]: Slate dark design system with micro-interactions, live token chips, real-time preview, and options_ui integration
-- [Phase 6]: Comprehensive HTML test fixture page and zero-dependency PKZIP extension packager
+- Retain Manifest V3 offscreen architecture and fully local conversion.
+- Emit manifest content scripts as a standalone classic IIFE; preserve ESM extension pages and existing nested HTML paths.
+- Validate IPC correlation and missing replies; retain existing timeout settings.
+- Seed defaults only after a successful empty-storage read; preserve synced preferences during reinstall and update.
+- Serialize context-menu rebuilds triggered by installation, startup, and settings changes.
 
 ### Pending Todos
 
-None. All v1 roadmap milestones are 100% fulfilled.
+None in the todo ledger.
 
 ### Blockers/Concerns
 
-None.
+- Configured security audit has not run: $gsd-secure-phase 1 before advancing.
+- Phases 2–6 lack canonical completion evidence.
 
 ## Deferred Items
 
-Items acknowledged and carried forward to v2:
-
-| Category | Item | Status | Deferred At |
-|----------|------|--------|-------------|
-| Advanced | Batch download & tab gallery inspector | Planned for v2 | Initial Definition |
-| Advanced | Dimension preset scaler (e.g. 50%, 1920px max) | Planned for v2 | Initial Definition |
-| Advanced | Multi-frame animated GIF/WebP split | Planned for v2 | Initial Definition |
+Carried forward to v2: batch download/tab gallery, dimension presets, and animated GIF/WebP frame extraction.
 
 ## Session Continuity
 
-Last session: 2026-08-16
-Status: Phase 6 and all v1 requirements completed
-Artifact: `save-image-as-v1.0.0.zip` ready in project root
+Last session: 2026-11-03
+Completed: Phase 1 execution and verification.
+Next: security audit, then $gsd-execute-phase 2 to inspect implementation and restore evidence.

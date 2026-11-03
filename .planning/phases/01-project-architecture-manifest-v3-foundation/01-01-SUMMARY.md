@@ -73,7 +73,7 @@ No new implementation commits were fabricated for already completed tasks.
 ## Verification
 
 - Before repair, the new regression suite failed on the content script with `Cannot use import statement outside a module`; its other two checks passed.
-- After repair, `npm run typecheck` passed and `npm test -- tests/build-output.test.ts` passed all **3 tests**.
+- After repair, `npm run typecheck` passed and the focused build-output test command passed all **3 tests**.
 - `npm run build` passed TypeScript validation and Vite production output generation.
 - A Vite watch smoke check built successfully, observed a timestamp change to a content-only dependency, rebuilt, and parsed both emitted content bundles as classic JavaScript. The original source timestamp was restored and temporary output removed.
 - `npm ls --depth=0` passed without missing or invalid dependencies; no packages installed or changed.

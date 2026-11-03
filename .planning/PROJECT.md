@@ -12,11 +12,10 @@ Instantly convert and download any web image into any desired format with a sing
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Manifest V3 architecture with typed messaging, background service worker, and offscreen Canvas bridge. Validated in Phase 1 on 2026-11-03 with automated and Chromium runtime checks.
 
 ### Active
 
-- [ ] Chrome Extension Manifest V3 architecture with background service worker, offscreen canvas conversion pipeline, and content scripts.
 - [ ] Context menu integration with configurable sub-menu and quick-action entries for all target formats (PNG, JPG, WebP, AVIF, BMP, GIF, ICO, PDF, SVG).
 - [ ] 100% Client-side conversion engine supporting raster, icon, and document formats without external server dependencies.
 - [ ] High-resolution asset detection via `srcset`, `data-src`, `currentSrc`, parent `<a>` links, and full-res attributes.
@@ -71,3 +70,9 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 *Last updated: 2026-08-16 after initialization*
+
+## Current State
+
+Phase 1 verified on 2026-11-03. Remaining phases have existing implementation but need completion-evidence recovery. Security audit is required before advancing.
+
+Last updated: 2026-11-03
