@@ -50,6 +50,11 @@ export async function sendMessage<TResponse extends BaseMessage, TRequest extend
           return;
         }
 
+        if (response.id !== payload.id) {
+          reject(new Error(`Response correlation mismatch for message ${payload.type}`));
+          return;
+        }
+
         resolve(response);
       });
     } catch (err) {
@@ -98,6 +103,16 @@ export async function sendToTab<TResponse extends BaseMessage, TRequest extends 
 
         if (chrome.runtime.lastError) {
           reject(new Error(chrome.runtime.lastError.message || `Tab ${tabId} unavailable`));
+          return;
+        }
+
+        if (!response) {
+          reject(new Error(`No response received for tab message ${payload.type}`));
+          return;
+        }
+
+        if (response.id !== payload.id) {
+          reject(new Error(`Response correlation mismatch for tab message ${payload.type}`));
           return;
         }
 

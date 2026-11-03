@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { sendMessage, pingOffscreen, generateMessageId } from '../src/utils/messaging';
+import { sendMessage, sendToTab, pingOffscreen, generateMessageId } from '../src/utils/messaging';
 import { OffscreenPongMessage } from '../src/utils/types';
 import { resetMocks } from './setup';
 
@@ -54,6 +54,33 @@ describe('Messaging Utility', () => {
     await expect(
       sendMessage({ type: 'OFFSCREEN_PING', id: 'timeout_1' }, 50)
     ).rejects.toThrow(/Message timeout after 50ms/);
+  });
+
+  it('rejects runtime responses with a different correlation ID', async () => {
+    (chrome.runtime.sendMessage as any).mockImplementation((_msg: any, callback: (res: any) => void) => {
+      callback({ type: 'OFFSCREEN_PONG', id: 'another-request' });
+    });
+
+    await expect(sendMessage({ type: 'OFFSCREEN_PING', id: 'expected' }))
+      .rejects.toThrow(/correlation/i);
+  });
+
+  it('rejects tab responses with a different correlation ID', async () => {
+    (chrome.tabs.sendMessage as any).mockImplementation((_tab: number, _msg: any, callback: (res: any) => void) => {
+      callback({ type: 'INSPECT_ELEMENT_RESPONSE', id: 'another-request' });
+    });
+
+    await expect(sendToTab(1, { type: 'INSPECT_ELEMENT_REQUEST', id: 'expected' }))
+      .rejects.toThrow(/correlation/i);
+  });
+
+  it('rejects a tab message when the receiver sends no response', async () => {
+    (chrome.tabs.sendMessage as any).mockImplementation((_tab: number, _msg: any, callback: (res: any) => void) => {
+      callback(undefined);
+    });
+
+    await expect(sendToTab(1, { type: 'INSPECT_ELEMENT_REQUEST', id: 'expected' }))
+      .rejects.toThrow(/No response/);
   });
 
   it('pingOffscreen returns true on successful pong', async () => {
