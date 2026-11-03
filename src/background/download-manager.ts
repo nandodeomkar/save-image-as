@@ -147,10 +147,8 @@ export async function handleQuickSaveImage(
 
     let downloadUrl = element.url;
 
-    // If target format is SVG and we already have raw SVG markup
-    if (targetFormat === 'svg' && element.svgContent) {
-      downloadUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(element.svgContent)}`;
-    } else {
+    // SVG also goes through the converter so saved markup is sanitized.
+    {
       // Determine source payload
       let sourcePayload: ConvertImageRequestMessage['source'];
       if (element.svgContent) {
@@ -168,7 +166,7 @@ export async function handleQuickSaveImage(
         source: sourcePayload,
         targetFormat,
         quality,
-        backgroundColor: settings.backgroundColor,
+        backgroundColor: ['jpeg', 'bmp', 'pdf'].includes(targetFormat) ? settings.backgroundColor : undefined,
         originalFilename: filename,
         pageMetadata: {
           pageTitle: element.pageTitle,

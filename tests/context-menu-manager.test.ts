@@ -199,7 +199,7 @@ describe('Context Menu Manager', () => {
       );
     });
 
-    it('should directly package SVG markup when saving as SVG', async () => {
+    it('routes SVG markup through sanitizing conversion before saving', async () => {
       const mockResult: InspectElementResult = {
         url: 'https://example.com/icon.svg',
         elementType: 'svg-inline',
@@ -221,7 +221,10 @@ describe('Context Menu Manager', () => {
         return Promise.resolve();
       });
 
-      const convertSpy = vi.spyOn(downloadManager, 'handleConvertImage');
+      const convertSpy = vi.spyOn(downloadManager, 'handleConvertImage').mockResolvedValue({
+        type: 'CONVERT_IMAGE_RESPONSE', id: 'svg-converted', success: true,
+        dataUrl: 'data:image/svg+xml;base64,PHN2Zy8+', mimeType: 'image/svg+xml'
+      });
 
       const info: chrome.contextMenus.OnClickData = {
         menuItemId: `${CONTEXT_MENU_FORMAT_PREFIX}svg`,
@@ -232,8 +235,9 @@ describe('Context Menu Manager', () => {
 
       await handleContextMenuClick(info, mockTab);
 
-      // Conversion engine not needed for raw SVG preservation
-      expect(convertSpy).not.toHaveBeenCalled();
+      expect(convertSpy).toHaveBeenCalledWith(expect.objectContaining({
+        source: { type: 'svg-string', data: mockResult.svgContent }, targetFormat: 'svg', backgroundColor: undefined
+      }));
 
       expect(chrome.downloads.download).toHaveBeenCalledWith(
         expect.objectContaining({

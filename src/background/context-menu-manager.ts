@@ -214,10 +214,8 @@ export async function processContextMenuSave(
 
     let downloadUrl = elementResult.url;
 
-    // Direct SVG preservation if already raw SVG markup
-    if (targetFormat === 'svg' && elementResult.svgContent) {
-      downloadUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(elementResult.svgContent)}`;
-    } else {
+    // SVG also goes through the converter so saved markup is sanitized.
+    {
       let sourcePayload: {
         type: 'url' | 'data-url' | 'blob-buffer' | 'svg-string';
         data: string;
@@ -237,7 +235,7 @@ export async function processContextMenuSave(
         source: sourcePayload,
         targetFormat,
         quality,
-        backgroundColor: settings.backgroundColor,
+        backgroundColor: ['jpeg', 'bmp', 'pdf'].includes(targetFormat) ? settings.backgroundColor : undefined,
         originalFilename: filename,
         pageMetadata: {
           pageTitle: elementResult.pageTitle,
