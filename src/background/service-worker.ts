@@ -1,4 +1,4 @@
-import { getSettings, saveSettings, onSettingsChanged } from '../utils/storage';
+import { getSettings, initializeSettings, onSettingsChanged } from '../utils/storage';
 import {
   ExtensionMessage,
   FetchImageRequestMessage,
@@ -37,10 +37,13 @@ function updateContextMenus(settings: ExtensionSettings): Promise<void> {
 chrome.runtime.onInstalled.addListener(async (details) => {
   console.info(`[ServiceWorker] onInstalled triggered (reason: ${details.reason})`);
 
-  // Persist defaults on first install while preserving preferences on updates.
-  const settings = await getSettings();
-  await saveSettings(settings);
-  await updateContextMenus(settings);
+  try {
+    if (details.reason === 'install') await initializeSettings();
+    const settings = await getSettings();
+    await updateContextMenus(settings);
+  } catch (err) {
+    console.warn('[ServiceWorker] Could not initialize extension settings:', err);
+  }
 });
 
 /**

@@ -12,6 +12,33 @@ function getStorageArea(): chrome.storage.StorageArea | null {
   return null;
 }
 
+/** Seed a new installation only after storage confirms that preferences are absent. */
+export async function initializeSettings(): Promise<void> {
+  const storage = getStorageArea();
+  if (!storage) return;
+
+  await new Promise<void>((resolve, reject) => {
+    storage.get([STORAGE_KEY], (result) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message || 'Failed to read settings'));
+        return;
+      }
+      // Synced preferences may already exist after reinstalling the extension.
+      if (result?.[STORAGE_KEY] !== undefined) {
+        resolve();
+        return;
+      }
+      storage.set({ [STORAGE_KEY]: { ...DEFAULT_SETTINGS } }, () => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message || 'Failed to initialize settings'));
+        } else {
+          resolve();
+        }
+      });
+    });
+  });
+}
+
 /**
  * Retrieve user settings merged with defaults
  */

@@ -2,7 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createContextMenus } from '../src/background/context-menu-manager';
 import { DEFAULT_SETTINGS } from '../src/utils/types';
 import { getSettings, saveSettings } from '../src/utils/storage';
-import { resetMocks } from './setup';
+import { mockStorageArea, resetMocks } from './setup';
 
 vi.mock('../src/background/context-menu-manager', () => ({
   createContextMenus: vi.fn().mockResolvedValue(undefined),
@@ -52,5 +52,30 @@ describe('Service worker lifecycle', () => {
     const settings = await saveSettings({ enabledFormats: ['png', 'webp'] });
 
     await vi.waitFor(() => expect(createContextMenus).toHaveBeenCalledWith(settings));
+  });
+
+  it.each(['install', 'update'])('preserves synced preferences after a failed %s read', async (reason) => {
+    await saveSettings({ defaultFormat: 'webp', jpegQuality: 0.7 });
+    vi.mocked(chrome.storage.sync.set).mockClear();
+    mockStorageArea.get.mockImplementationOnce((_keys, callback) => {
+      (chrome.runtime as any).lastError = { message: 'Temporary storage failure' };
+      callback({});
+      (chrome.runtime as any).lastError = null;
+    });
+
+    await installed({ reason } as chrome.runtime.InstalledDetails);
+
+    expect(chrome.storage.sync.set).not.toHaveBeenCalled();
+    expect(await getSettings()).toMatchObject({ defaultFormat: 'webp', jpegQuality: 0.7 });
+  });
+
+  it('leaves existing synced preferences untouched on reinstall', async () => {
+    await saveSettings({ defaultFormat: 'webp', jpegQuality: 0.7 });
+    vi.mocked(chrome.storage.sync.set).mockClear();
+
+    await installed({ reason: 'install' } as chrome.runtime.InstalledDetails);
+
+    expect(chrome.storage.sync.set).not.toHaveBeenCalled();
+    expect(await getSettings()).toMatchObject({ defaultFormat: 'webp', jpegQuality: 0.7 });
   });
 });
