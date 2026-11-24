@@ -1,0 +1,74 @@
+{
+  "checked_at": "2026-11-03T13:58:59.316Z",
+  "checks": [
+    "png: real encoded bytes, dimensions and applicable structure/pixel checks passed",
+    "jpeg: real encoded bytes, dimensions and applicable structure/pixel checks passed",
+    "webp: real encoded bytes, dimensions and applicable structure/pixel checks passed",
+    "avif: real encoded bytes, dimensions and applicable structure/pixel checks passed",
+    "bmp: real encoded bytes, dimensions and applicable structure/pixel checks passed",
+    "gif: real encoded bytes, dimensions and applicable structure/pixel checks passed",
+    "ico: real encoded bytes, dimensions and applicable structure/pixel checks passed",
+    "pdf: real encoded bytes, dimensions and applicable structure/pixel checks passed",
+    "svg: real encoded bytes, dimensions and applicable structure/pixel checks passed",
+    "Remote SVG without CORS headers fetched via worker and preserved as vectors"
+  ],
+  "formats": {
+    "png": {
+      "mimeType": "image/png",
+      "byteLength": 109,
+      "width": 8,
+      "height": 6
+    },
+    "jpeg": {
+      "mimeType": "image/jpeg",
+      "byteLength": 791,
+      "width": 8,
+      "height": 6
+    },
+    "webp": {
+      "mimeType": "image/webp",
+      "byteLength": 584,
+      "width": 8,
+      "height": 6
+    },
+    "avif": {
+      "mimeType": "image/avif",
+      "byteLength": 510,
+      "width": 8,
+      "height": 6
+    },
+    "bmp": {
+      "mimeType": "image/bmp",
+      "byteLength": 198,
+      "width": 8,
+      "height": 6
+    },
+    "gif": {
+      "mimeType": "image/gif",
+      "byteLength": 52,
+      "width": 8,
+      "height": 6
+    },
+    "ico": {
+      "mimeType": "image/x-icon",
+      "byteLength": 3135,
+      "width": 8,
+      "height": 6
+    },
+    "pdf": {
+      "mimeType": "application/pdf",
+      "byteLength": 3643,
+      "width": 8,
+      "height": 6
+    },
+    "svg": {
+      "mimeType": "image/svg+xml",
+      "byteLength": 163,
+      "width": 8,
+      "height": 6
+    }
+  },
+  "gaps": [],
+  "browser": "151.0.7922.34",
+  "status": "passed"
+}
